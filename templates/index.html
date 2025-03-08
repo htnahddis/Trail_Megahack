@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android AI Agent</title>
+</head>
+<body>
+    <h1>Android AI Agent</h1>
+    <form id="voiceForm">
+        <label for="command">Enter Command:</label>
+        <input type="text" id="command" name="command" required>
+        <button type="submit">Send</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        document.getElementById('voiceForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const command = document.getElementById('command').value;
+
+            fetch('/api/process_voice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ command: command }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
