@@ -4,54 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Command Response</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        .response-box {
-            padding: 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 18px;
-            color: #333;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #777;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/response.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1>Command Response</h1>
-        <div class="response-box">
-            <!--<p>{{ result }}</p>   Jinja syntax to display response -->
-        </div>
-        <div class="footer">
-            Powered by Android AI Agent
+        <div class="card">
+            <div class="icon-container">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Command Response</h1>
+            <div class="response-box">
+                <p>{{ result }}</p>
+            </div>
+            <div class="footer">
+                <p>Powered by <span>Android AI Agent</span></p>
+            </div>
         </div>
     </div>
 </body>
 </html>
+

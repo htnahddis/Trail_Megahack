@@ -4,22 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Android AI Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Android AI Agent</h1>
-    <form id="voiceForm">
-        <label for="command">Enter Command:</label>
-        <input type="text" id="command" name="command" required>
-        <button type="submit">Send</button>
-    </form>
-    <p id="result"></p>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-robot"></i> Android AI Agent</h1>
+        </header>
+        <main>
+            <form id="voiceForm">
+                <div class="input-group">
+                    <label for="command">Enter Command:</label>
+                    <input type="text" id="command" name="command" required placeholder="Type your command here...">
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </form>
+            <div class="result-container">
+                <p id="result"></p>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 Android AI Agent</p>
+        </footer>
+    </div>
 
     <script>
         document.getElementById('voiceForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const command = document.getElementById('command').value;
+            const resultElement = document.getElementById('result');
+            
+            resultElement.innerHTML = '<div class="loader"></div>';
 
-            fetch('/api/process_voice', {
+            fetch("{{ url_for('process_voice') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,10 +46,15 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('result').innerText = JSON.stringify(data);
+                resultElement.innerText = JSON.stringify(data);
+                resultElement.classList.add('fade-in');
+                setTimeout(() => {
+                    resultElement.classList.remove('fade-in');
+                }, 500);
             })
             .catch(error => {
                 console.error('Error:', error);
+                resultElement.innerText = 'Error processing command. Please try again.';
             });
         });
     </script>

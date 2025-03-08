@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/voice.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <button id="start" onclick="startRecognition()">Start Recognition</button>
-    <button id="end" onclick="stopRecognition()">Stop Recognition</button>
-    <p id="output"></p>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-microphone"></i> Voice Recognition</h1>
+        </header>
+        <main>
+            <div class="controls">
+                <button id="start" onclick="startRecognition()">
+                    <i class="fas fa-play"></i>
+                    <span>Start</span>
+                </button>
+                <button id="end" onclick="stopRecognition()">
+                    <i class="fas fa-stop"></i>
+                    <span>Stop</span>
+                </button>
+            </div>
+            <div class="output-container">
+                <div class="output-box">
+                    <p id="output"></p>
+                </div>
+                <div class="status-indicator">
+                    <div class="pulse"></div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>Speak clearly for best results</p>
+        </footer>
+    </div>
 
     <script>
         const output = document.getElementById('output');
+        const statusIndicator = document.querySelector('.status-indicator');
         let recognition;
 
         function startRecognition() {
@@ -17,12 +47,17 @@
             recognition.lang = 'en';
             recognition.continuous = true;
 
+            statusIndicator.classList.add('active');
+            document.getElementById('start').classList.add('active');
+            document.getElementById('end').classList.remove('active');
+
             recognition.onresult = function(event) {
                 const transcript = event.results[event.results.length - 1][0].transcript;
                 output.textContent += transcript;
+                output.scrollTop = output.scrollHeight;
 
                 // Send the recognized speech to the Flask API
-                fetch('/api/process_voice', {
+                fetch("{{ url_for('process_voice') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -31,7 +66,10 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    output.textContent += "\nResponse: " + JSON.stringify(data);
+                    output.innerHTML += '<div class="response">' + 
+                        '<strong>Response:</strong> ' + 
+                        JSON.stringify(data) + '</div>';
+                    output.scrollTop = output.scrollHeight;
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -45,8 +83,13 @@
         }
 
         function stopRecognition() {
-            recognition.stop();
-            output.innerHTML = "";
+            if (recognition) {
+                recognition.stop();
+                statusIndicator.classList.remove('active');
+                document.getElementById('end').classList.add('active');
+                document.getElementById('start').classList.remove('active');
+                output.innerHTML = "";
+            }
         }
     </script>
 </body>
